@@ -14,6 +14,10 @@ module Megam
 
     # The body content needs to be a json.
     def login(new_account)
+      puts "##########################"
+      puts "In login api nacc", new_account.inspect
+      puts "In login api oprions", @options.inspect
+      puts "##########################"
       @options = {:path => '/accounts/login',
       :body => Megam::JSONCompat.to_json(new_account)}.merge(@options)
 

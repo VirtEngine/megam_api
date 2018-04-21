@@ -5,6 +5,7 @@ module Megam
         attr_accessor :email
         attr_accessor :password
         attr_accessor :api_key
+        attr_accessor :master_key
         attr_accessor :name
         attr_accessor :phone
         attr_accessor :states
@@ -21,6 +22,7 @@ module Megam
             @email = nil
             @user_email = nil
             @api_key = nil
+            @master_key = nil
             @name = {}
             @phone = {}
             @password = {}
@@ -30,7 +32,7 @@ module Megam
             @dates = {}
             @some_msg = {}
 
-            super({ email: o[:email], api_key: o[:api_key],
+            super({ email: o[:email], api_key: o[:api_key], master_key: o[:master_key],
                     host: o[:host], password_hash: o[:password_hash], org_id: o[:org_id] })
         end
 
@@ -59,6 +61,7 @@ module Megam
                 'id' => @id,
                 'email' => @email,
                 'api_key' => @api_key,
+                'master_key' => @master_key,
                 'name' => @name,
                 'phone' => @phone,
                 'password' => @password,
@@ -105,7 +108,7 @@ module Megam
 
 
         def self.from_hash(o)
-            acct = new(email: o[:email], api_key: o[:api_key], host: o[:host], password_hash: o[:password_hash], org_id: o[:org_id])
+            acct = new(email: o[:email], api_key: o[:api_key], master_key: o[:master_key], host: o[:host], password_hash: o[:password_hash], org_id: o[:org_id])
             acct.from_hash(o)
             acct
         end
@@ -115,6 +118,9 @@ module Megam
             @email      = o[:email] if o.key?(:email)
             @user_email      = o[:user_email] if o.key?(:user_email)
             @api_key    = o[:api_key] if o.key?(:api_key)
+            @master_key    = o[:master_key] if o.key?(:master_key)
+
+            puts "OOOOOOOOOOO_OOOO ", o.inspect
 
             @name[:first_name] = o[:first_name] if o.key?(:first_name)
             @name[:last_name] = o[:last_name] if o.key?(:last_name)
@@ -230,6 +236,7 @@ module Megam
             h['email'] = @email
             h['user_email'] = @user_email
             h['api_key'] = @api_key
+            h['master_key'] = @master_key
             h['name'] = @name
             h['phone'] = @phone
             h['password'] = @password

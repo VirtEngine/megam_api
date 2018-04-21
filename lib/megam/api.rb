@@ -153,6 +153,7 @@ module Megam
         def initialize(options = {})
             @options = OPTIONS.merge(options)
 
+
             assign_credentials
 
             ensure_host_is_flattened
@@ -320,8 +321,14 @@ module Megam
         end
 
         def build_header_masterkey
-          if masterkey_combo_missing? && !is_passthru?
-               @options[:headers] = @options[:headers].merge(X_Megam_MASTERKEY => "true")
+          body_base64 = Base64.urlsafe_encode64(OpenSSL::Digest::MD5.digest(@options[:body]))
+          current_date = Time.now.strftime('%Y-%m-%d %H:%M')
+          moving_factor = "#{current_date}" + "\n" + "#{@options[:path]}" + "\n" + "#{body_base64}"
+
+          digest = OpenSSL::Digest.new('sha256')
+          unless @master_key.nil?
+            hash = OpenSSL::HMAC.hexdigest(digest, @master_key, moving_factor)
+            @options[:headers] = @options[:headers].merge(X_Megam_MASTERKEY => hash)
           end
         end
 
