@@ -282,7 +282,8 @@ module Megam
 
 
         def build_headers
-            encoded = encode_header
+            current_date = Time.now.strftime('%Y-%m-%d %H:%M')
+            encoded = encode_header(current_date)
 
             @options[:headers] = HEADERS.merge(X_Megam_HMAC => encoded[:hmac],
                                         X_Megam_DATE => encoded[:date],
@@ -291,12 +292,12 @@ module Megam
 
             build_header_puttusavi
 
-            build_header_masterkey
+            build_header_masterkey(current_date)
         end
 
-        def encode_header
+        def encode_header(current_date)
             body_base64 = Base64.urlsafe_encode64(OpenSSL::Digest::MD5.digest(@options[:body]))
-            current_date = Time.now.strftime('%Y-%m-%d %H:%M')
+            # current_date = Time.now.strftime('%Y-%m-%d %H:%M')
 
             movingFactor = "#{current_date}" + "\n" + "#{@options[:path]}" + "\n" + "#{body_base64}"
 
@@ -320,9 +321,9 @@ module Megam
           end
         end
 
-        def build_header_masterkey
+        def build_header_masterkey(current_date)
           body_base64 = Base64.urlsafe_encode64(OpenSSL::Digest::MD5.digest(@options[:body]))
-          current_date = Time.now.strftime('%Y-%m-%d %H:%M')
+
           moving_factor = "#{current_date}" + "\n" + "#{@options[:path]}" + "\n" + "#{body_base64}"
 
           digest = OpenSSL::Digest.new('sha256')
